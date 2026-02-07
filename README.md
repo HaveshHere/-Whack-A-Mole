@@ -28,6 +28,13 @@ Here's what you can do with this FPGA-based game:
 
 ## 📅 The Process
 
+I began by learning how Verilog works in Intel Quartus through YouTube tutorials and online research to understand the functions of each part of the code. I also familiarized myself with the DE1-SOC board, which I borrowed during my internship. Most of my time was spent experimenting with the board, testing key components such as LEDs and buttons, and observing how inputs affected outputs like the 7-segment display.
+
+Throughout the process, I encountered various errors, which I addressed using AI tools like ChatGPT, Stack Overflow, and Gemini. I also collaborated with my colleagues and supervisors to break down problems and find solutions. Gradually, I learned to combine all the tested functions into a mini-game, like Whack-a-Mole. In the end, everything worked well, and I gained a lot of hands-on experience and practical understanding.
+
+## 📈 Overall Growth
+
+Throughout this project, I developed stronger problem-solving and debugging skills, learning to approach challenges methodically and use available resources effectively. My technical confidence with Verilog and the DE1-SOC board improved significantly, and I gained experience integrating multiple functions into a cohesive project. Working closely with colleagues and supervisors also enhanced my collaboration and communication skills. Overall, this experience taught me persistence, adaptability, and how to turn trial-and-error into meaningful learning.
 
 ## 💭 How can it be improved?
 - Use the VGA port to show the game on a computer screen instead of just using LEDs.
@@ -39,6 +46,21 @@ Here's what you can do with this FPGA-based game:
 - Add selectable game modes with different speeds and timers.
   
 - Let two people play at the same time to make it competitive.
+
+## 🚦Running the Project
+1. Clone this repository to your local machine.
+  
+2. Install Intel Quartus Prime (ensure the required version is supported).
+
+3. Select the correct FPGA device based on the board you are using.
+   - For this project, the DE1-SoC board is used.
+   - Target device: Cyclone V – 5CSEMA5F31C6N.
+
+4. Open the project in Quartus Prime and compile the design.
+   
+5. Connect the DE1-SoC board to your computer and program the FPGA.
+   
+6. Verify the functionality using the board’s inputs (buttons/switches) and outputs (LEDs and 7-segment display).
 
 ## 🎥 Video
 
