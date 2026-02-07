@@ -26,6 +26,9 @@ Here's what you can do with this FPGA-based game:
   
 - Emergency Reset: Double-tap KEY3 at any time to trigger the custom reset module and restart the system logic.
 
+## 📅 The Process
+
+
 ## 💭 How can it be improved?
 - Use the VGA port to show the game on a computer screen instead of just using LEDs.
   
