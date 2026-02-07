@@ -65,3 +65,8 @@ Throughout this project, I developed stronger problem-solving and debugging skil
 ## 🎥 Video
 
 [https://drive.google.com/file/d/18xgqKBGixJvI2DoXaJb7VtH317SaS0FA/view?usp=sharing]
+
+## 📝 Documentation
+
+[VeCAD ELITE VOLUNTARY INTERNSHIP 2025 REPORT.pdf](https://github.com/user-attachments/files/25143212/VeCAD.ELITE.VOLUNTARY.INTERNSHIP.2025.REPORT.pdf)
+
