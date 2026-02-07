@@ -1,0 +1,10 @@
+module ButtonLED(
+	input wire [3:0] KEY,
+	output wire [3:0] LEDR
+);
+
+	assign LEDR[0] = ~KEY[0];
+	assign LEDR[1] = ~KEY[1];
+	assign LEDR[2] = ~KEY[2];
+	assign LEDR[3] = ~KEY[3];	
+endmodule

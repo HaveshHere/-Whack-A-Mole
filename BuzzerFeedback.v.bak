@@ -1,0 +1,50 @@
+module BuzzerFeedback (
+    input wire CLOCK_50,
+    input wire correct, // pulse when correct key hit
+    input wire wrong,   // pulse when wrong key hit
+    output reg buzzer   // output to piezo buzzer
+);
+
+    reg [19:0] counter = 0;        // 20-bit counter for timing
+    reg [19:0] tone_period = 0;    // tone wave period
+    reg play_tone = 0;             // flag if tone playing
+    reg [15:0] tone_length = 0;    // duration of tone in clock cycles
+
+    // Parameters for tone frequencies (assuming freq = CLOCK_50 / 2 / period)
+    // Example: 1 kHz => period = 25000 (50MHz / 2 / 1000Hz)
+    localparam CORRECT_TONE_PERIOD = 25000;    // approx 1 kHz tone for correct
+    localparam WRONG_TONE_PERIOD = 12500;      // approx 2 kHz tone for wrong
+    localparam TONE_DURATION = 1_250_000;      // 25 ms tone duration at 50MHz
+
+    always @(posedge CLOCK_50) begin
+        if (correct) begin
+            play_tone <= 1;
+            tone_period <= CORRECT_TONE_PERIOD;
+            tone_length <= TONE_DURATION;
+            counter <= 0;
+            buzzer <= 1;
+        end else if (wrong) begin
+            play_tone <= 1;
+            tone_period <= WRONG_TONE_PERIOD;
+            tone_length <= TONE_DURATION;
+            counter <= 0;
+            buzzer <= 1;
+        end else if (play_tone) begin
+            counter <= counter + 1;
+
+            // Toggle buzzer at half period to create square wave
+            if (counter >= (tone_period >> 1)) begin
+                buzzer <= ~buzzer;
+                counter <= 0;
+                tone_length <= tone_length - (tone_period >> 1);
+                if (tone_length <= (tone_period >> 1)) begin
+                    play_tone <= 0;  // Turn off tone when duration ends
+                    buzzer <= 0;
+                end
+            end
+        end else begin
+            buzzer <= 0;   // buzzer off when no tone
+        end
+    end
+
+endmodule

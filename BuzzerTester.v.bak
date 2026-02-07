@@ -1,0 +1,27 @@
+module BuzzerTester (
+    input wire CLOCK_50,   // 50 MHz clock input
+    output reg buzzer      // output to buzzer (assign to GPIO_0 pin in Quartus)
+);
+
+    reg [15:0] counter = 0;       // 16-bit counter for frequency division
+    reg buzzer_state = 0;
+
+    // Generate ~1 kHz square wave tone
+    // 50,000,000 (50 MHz) / 1,000 Hz / 2 = 25,000 counts per half cycle
+    localparam HALF_PERIOD = 25000;
+
+    always @(posedge CLOCK_50) begin
+        if (counter == HALF_PERIOD) begin
+            counter <= 0;
+            buzzer_state <= ~buzzer_state;  // toggle buzzer output
+        end
+        else begin
+            counter <= counter + 1;
+        end
+    end
+
+    always @* begin
+        buzzer = buzzer_state;
+    end
+
+endmodule

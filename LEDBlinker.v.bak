@@ -1,0 +1,12 @@
+module LEDBlinker (
+	input wire CLOCK_509
+	output reg LEDR0
+);
+
+	reg [25:0] counter;
+	
+	always @(posedge CLOCK_50) begin
+		counter <= counter +1;
+		LEDR0 <= counter[25];
+	end
+endmodule

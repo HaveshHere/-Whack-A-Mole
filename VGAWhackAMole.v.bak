@@ -1,0 +1,96 @@
+module VGAWhackAMole(
+    input  CLOCK_50,
+    output [7:0] VGA_R,
+    output [7:0] VGA_G,
+    output [7:0] VGA_B,
+    output       VGA_HS,
+    output       VGA_VS,
+    output       VGA_BLANK_N,
+    output       VGA_SYNC_N,
+    output       VGA_CLK
+);
+
+    //-----------------------------------------------------
+    // VGA 640x480 @ 60Hz sync generator
+    //-----------------------------------------------------
+    wire [9:0] x_raw;
+    wire [9:0] y_raw;
+    wire display_area;
+
+    vga_sync sync_inst(
+        .clk50(CLOCK_50),
+        .hsync(VGA_HS),
+        .vsync(VGA_VS),
+        .display_area(display_area),
+        .x(x_raw),
+        .y(y_raw),
+        .vga_blank_n(VGA_BLANK_N),
+        .vga_sync_n(VGA_SYNC_N),
+        .vga_clk(VGA_CLK)
+    );
+
+    // shift visible coordinates so (0,0) = top-left of visible area
+    wire [9:0] x = x_raw - 144;
+    wire [9:0] y = y_raw - 35;
+
+    //-----------------------------------------------------
+    // Ball positions + random generator
+    //-----------------------------------------------------
+    localparam Y_CENTER = 240;
+    localparam R = 30;
+
+    localparam X1 = 80;   
+    localparam X2 = 240;  
+    localparam X3 = 400;  
+    localparam X4 = 560;  
+
+    reg [25:0] counter = 0;
+    reg [7:0] lfsr = 8'hA5;
+    reg [1:0] active_ball = 0;
+
+    reg [7:0] ball_r = 8'hFF;
+    reg [7:0] ball_g = 8'h00;
+    reg [7:0] ball_b = 8'h00;
+
+    always @(posedge CLOCK_50) begin
+        counter <= counter + 1;
+
+        if (counter == 26'd50_000_000) begin // ~1 second
+            counter <= 0;
+
+            // LFSR: x^8 + x^6 + x^5 + x^4 + 1
+            lfsr <= {lfsr[6:0], lfsr[7] ^ lfsr[5] ^ lfsr[4] ^ lfsr[3]};
+
+            active_ball <= lfsr[1:0];  // pick 0-3
+
+            ball_r <= lfsr;
+            ball_g <= ~lfsr;
+            ball_b <= {lfsr[3:0], lfsr[7:4]};
+        end
+    end
+
+    //-----------------------------------------------------
+    // Drawing logic
+    //-----------------------------------------------------
+    wire ball1 = (active_ball == 0) && ((x - X1)*(x - X1)+(y - Y_CENTER)*(y - Y_CENTER) <= R*R);
+    wire ball2 = (active_ball == 1) && ((x - X2)*(x - X2)+(y - Y_CENTER)*(y - Y_CENTER) <= R*R);
+    wire ball3 = (active_ball == 2) && ((x - X3)*(x - X3)+(y - Y_CENTER)*(y - Y_CENTER) <= R*R);
+    wire ball4 = (active_ball == 3) && ((x - X4)*(x - X4)+(y - Y_CENTER)*(y - Y_CENTER) <= R*R);
+
+    wire line1 = (x >= 158 && x < 163);
+    wire line2 = (x >= 318 && x < 323);
+    wire line3 = (x >= 478 && x < 483);
+
+    wire draw_ball = (x<640 && y<480) && (ball1 || ball2 || ball3 || ball4);
+    wire draw_line = line1 || line2 || line3;
+
+    assign VGA_R = (display_area && draw_ball) ? ball_r :
+                   (display_area && draw_line) ? 8'hFF : 8'h00;
+
+    assign VGA_G = (display_area && draw_ball) ? ball_g :
+                   (display_area && draw_line) ? 8'h00 : 8'h00;
+
+    assign VGA_B = (display_area && draw_ball) ? ball_b :
+                   (display_area && draw_line) ? 8'h00 : 8'h00;
+
+endmodule

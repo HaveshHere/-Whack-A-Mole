@@ -1,0 +1,6 @@
+module LEDTest(
+	input wire[0:0] SW,
+	output wire[0:] LEDR
+);
+	assign LEDR[0] = SW[0]
+endmodule

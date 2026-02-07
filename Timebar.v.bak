@@ -1,0 +1,20 @@
+// Timebar.v
+// Shows countdown on LEDR[9:4] as a shrinking bar
+
+module Timebar (
+	input wire [7:0] time_left, // From WhackAMole
+	output reg [5:0] bar_leds // Connect to LEDR[9:4]
+);
+	
+	always @(*) begin
+		case (time_left / 8) // 45 sec / 8 ~ 6 steps
+				6,7: bar_leds = 6'b111111; // all on
+            5:   bar_leds = 6'b111110;
+            4:   bar_leds = 6'b111100;
+            3:   bar_leds = 6'b111000;
+            2:   bar_leds = 6'b110000;
+            1:   bar_leds = 6'b100000;
+				default: bar_leds = 6'b000000; // all of
+		endcase
+	end
+endmodule

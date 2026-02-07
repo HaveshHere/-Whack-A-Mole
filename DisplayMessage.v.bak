@@ -1,0 +1,82 @@
+module DisplayMessage (
+    input wire CLOCK_50,
+    input wire reset,
+    input wire game_started,
+    input wire game_over,
+    output reg [6:0] HEX0,
+    output reg [6:0] HEX1,
+    output reg [6:0] HEX2,
+    output reg [6:0] HEX3,
+    output reg [6:0] HEX4,
+    output reg [6:0] HEX5
+);
+
+    reg [25:0] delay_counter = 0;
+    reg show_finish = 0;
+
+    // 7-seg decoder
+    function [6:0] seg7;
+        input [3:0] char;
+        case (char)
+            4'd0: seg7 = 7'b1000000; // 0
+            4'd1: seg7 = 7'b1111001; // 1
+            4'd2: seg7 = 7'b0100100; // 2
+            4'd3: seg7 = 7'b0110000; // 3
+            4'd4: seg7 = 7'b0011001; // 4
+            4'd5: seg7 = 7'b0010010; // 5
+            4'd6: seg7 = 7'b0000010; // 6
+            4'd7: seg7 = 7'b1111000; // 7
+            4'd8: seg7 = 7'b0000000; // 8
+            4'd9: seg7 = 7'b0010000; // 9
+            default: seg7 = 7'b1111111; // blank
+        endcase
+    endfunction
+
+    // Letters for START and FINISH
+    localparam [6:0] S = 7'b0010010;
+    localparam [6:0] T = 7'b0000111;
+    localparam [6:0] A = 7'b0001000;
+    localparam [6:0] R = 7'b0101111;
+    localparam [6:0] F = 7'b0001110;
+    localparam [6:0] I = 7'b1111001;
+    localparam [6:0] N = 7'b0101011;
+    localparam [6:0] H = 7'b0001001;
+
+    always @(posedge CLOCK_50) begin
+        if (reset) begin
+            delay_counter <= 0;
+            show_finish <= 0;
+        end else begin
+            if (game_over) begin
+                if (delay_counter < 100_000_000) // ~2 seconds delay
+                    delay_counter <= delay_counter + 1;
+                else
+                    show_finish <= 1;
+            end else begin
+                delay_counter <= 0;
+                show_finish <= 0;
+            end
+        end
+    end
+
+    always @(*) begin
+        if (!game_started && !game_over) begin
+            // Display START
+            HEX5 = S; HEX4 = T; HEX3 = A; HEX2 = R; HEX1 = T; HEX0 = 7'b1111111;
+        end
+        else if (show_finish) begin
+            // Display FINISH
+            HEX5 = F; HEX4 = I; HEX3 = N; HEX2 = I; HEX1 = S; HEX0 = H;
+        end
+        else begin
+            // Blank
+            HEX5 = 7'b1111111;
+            HEX4 = 7'b1111111;
+            HEX3 = 7'b1111111;
+            HEX2 = 7'b1111111;
+            HEX1 = 7'b1111111;
+            HEX0 = 7'b1111111;
+        end
+    end
+
+endmodule

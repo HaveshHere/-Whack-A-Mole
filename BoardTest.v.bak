@@ -1,0 +1,5 @@
+module BoardTest(input wire [3:0]sw, output wire [3:0]LEDR);
+
+   assign LEDR = SW;
+	
+endmodule
