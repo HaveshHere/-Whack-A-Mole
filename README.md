@@ -36,7 +36,7 @@ Throughout the process, I encountered various errors, which I addressed using AI
 
 Throughout this project, I developed stronger problem-solving and debugging skills, learning to approach challenges methodically and use available resources effectively. My technical confidence with Verilog and the DE1-SOC board improved significantly, and I gained experience integrating multiple functions into a cohesive project. Working closely with colleagues and supervisors also enhanced my collaboration and communication skills. Overall, this experience taught me persistence, adaptability, and how to turn trial-and-error into meaningful learning.
 
-## 💭 How can it be improved?
+## 💭 How Can it be Improved?
 - Use the VGA port to show the game on a computer screen instead of just using LEDs.
   
 - Upgrade the buzzer to a real audio system for higher-quality sound effects.
